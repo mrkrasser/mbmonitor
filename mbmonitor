@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+#
+# Check cpu temperature every minute and power off pc if temp is high
+#
+
+$temp_halt='64.0';    # Critical CPU temp
+$fan_warn='100';      # Write in log if FAN spped is slow
+$logfile='/var/log/monitor.log'; # log file path
+$halt_path='echo 123';         # command for power off pc
+
+$date=localtime();
+chomp($date);
+open(MON,"mbmon -c1 -r |") or die "Can't exec mbmon.$!";
+while (<MON>){
+ @mon=split(/\n/);
+ foreach $k(@mon){
+  ($key,$value)=split(/\s*:\s*/,$k);
+  $mon{$key}=$value;
+ }
+}
+close(MON);
+
+$temp=$mon{'TEMP0'};
+$fan=$mon{'FAN0'};
+
+if ($temp >= $temp_halt){
+  loging("$date critical: temperature CPU is $temp\n$date Computer will be halted!!!");    
+  exec("$halt_path");
+}
+
+if ($fan <= $fan_warn){loging("$date warning:  CPU fan rotation is slow: $fan");}
+ 
+sub loging{
+ open (LOG,">>$logfile") or die "Can't exec $logfile.$!";;
+ print LOG "$_[0]\n";
+ close(LOG);
+}
