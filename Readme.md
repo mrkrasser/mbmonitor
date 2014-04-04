@@ -8,7 +8,7 @@ Check CPU temperature and Fan speed via **mbmon** program and exec command when 
 
 ### mbmon install
 FreeBSD  
-```cd /usr/ports/sysutils/mbmon/ && make install clean```
+```cd /usr/ports/sysutils/mbmon/ && make install clean```  
 Ubuntu  
 ```sudo apt-get install mbmon xmbmon```
  
